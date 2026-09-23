@@ -1,1 +1,108 @@
-timer-test.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>DMan's MultiTimer</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Arial,sans-serif;background:#eef2f5;color:#fff}
+.top{background:#17395f;padding:10px}
+.title{text-align:center;font-size:18px;font-weight:bold;margin-bottom:8px}
+.master{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+button{border:0;border-radius:7px;font-weight:bold}
+.master button{height:40px;color:#fff;font-size:12px}
+.startall{background:#258548}.lapall{background:#d58b18}.stopall{background:#a83232}.resetall{background:#555}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px}
+.runner{background:#fff;color:#111;border-radius:8px;padding:5px;margin-bottom:4px;min-width:0}
+.runner.running{background:#e5f5e8}
+.name{width:100%;font-size:15px;font-weight:bold;border:0;border-bottom:1px solid #ddd;padding:3px;background:transparent}
+.times{display:grid;grid-template-columns:1fr 1fr;gap:3px;text-align:center;margin:3px 0}
+.label{font-size:9px;color:#666;font-weight:bold}
+.time{font-size:18px;font-weight:bold;font-variant-numeric:tabular-nums}
+.buttons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px}
+.runner button{height:29px;color:#fff;font-size:11px}
+.go{background:#258548}.lap{background:#d58b18}.stop{background:#a83232}
+</style>
+</head>
+<body>
+<div class="top">
+<div class="title">DMan's MultiTimer</div>
+<div class="master">
+<button class="startall" onclick="startAll()">START ALL</button>
+<button class="lapall" onclick="lapAll()">LAP ALL</button>
+<button class="stopall" onclick="stopAll()">STOP ALL</button>
+<button class="resetall" onclick="resetAll()">RESET ALL</button>
+</div>
+</div>
+<div class="columns" id="columns"></div>
+<script>
+const COUNT=20;
+const runners=[];
+function fmt(ms){
+  if(ms<0) ms=0;
+  const tenths=Math.floor(ms/100)%10;
+  const sec=Math.floor(ms/1000)%60;
+  const min=Math.floor(ms/60000);
+  return min+":"+String(sec).padStart(2,"0")+"."+tenths;
+}
+function createRunner(i){
+  const r={running:false,startAt:0,accumulated:0,lapStartElapsed:0};
+  runners.push(r);
+  const box=document.createElement("div");
+  box.className="runner"; box.id="runner"+i;
+  box.innerHTML=`
+    <input class="name" value="Runner ${i+1}">
+    <div class="times">
+      <div><div class="label">TOTAL</div><div class="time" id="total${i}">0:00.0</div></div>
+      <div><div class="label">LAP</div><div class="time" id="lap${i}">0:00.0</div></div>
+    </div>
+    <div class="buttons">
+      <button class="go" onclick="startOne(${i})">START</button>
+      <button class="lap" onclick="lapOne(${i})">LAP</button>
+      <button class="stop" onclick="stopOne(${i})">STOP</button>
+    </div>`;
+  return box;
+}
+const columns=document.getElementById("columns");
+const left=document.createElement("div"), right=document.createElement("div");
+left.className=right.className="col"; columns.append(left,right);
+for(let i=0;i<COUNT;i++) (i<10?left:right).appendChild(createRunner(i));
+function elapsed(i){
+  const r=runners[i];
+  return r.accumulated+(r.running?(performance.now()-r.startAt):0);
+}
+function startOne(i){
+  const r=runners[i]; if(r.running)return;
+  r.startAt=performance.now(); r.running=true;
+  document.getElementById("runner"+i).classList.add("running");
+}
+function lapOne(i){
+  const r=runners[i]; if(!r.running)return;
+  r.lapStartElapsed=elapsed(i);
+}
+function stopOne(i){
+  const r=runners[i]; if(!r.running)return;
+  r.accumulated=elapsed(i); r.running=false;
+  document.getElementById("runner"+i).classList.remove("running");
+}
+function resetOne(i){
+  const r=runners[i];
+  r.running=false; r.startAt=0; r.accumulated=0; r.lapStartElapsed=0;
+  document.getElementById("runner"+i).classList.remove("running");
+}
+function startAll(){for(let i=0;i<COUNT;i++)startOne(i)}
+function lapAll(){for(let i=0;i<COUNT;i++)lapOne(i)}
+function stopAll(){for(let i=0;i<COUNT;i++)stopOne(i)}
+function resetAll(){for(let i=0;i<COUNT;i++)resetOne(i)}
+function update(){
+  for(let i=0;i<COUNT;i++){
+    const e=elapsed(i);
+    document.getElementById("total"+i).textContent=fmt(e);
+    document.getElementById("lap"+i).textContent=fmt(e-runners[i].lapStartElapsed);
+  }
+  requestAnimationFrame(update);
+}
+update();
+</script>
+</body>
+</html>
