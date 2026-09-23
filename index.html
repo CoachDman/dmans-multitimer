@@ -1,229 +1,215 @@
-<!doctype html><html><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>DMan’s MultiTimer</title>
-<style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;background:#eef1f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#111;overflow-x:hidden}
-body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-.top{background:#17395f;padding:5px 8px;position:sticky;top:0;z-index:20}
-.title{font-size:15px;font-weight:900;text-align:center;color:white;margin-bottom:4px}
-.master{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-button{border:0;border-radius:7px;color:white;font-weight:900;touch-action:manipulation;-webkit-user-select:none;user-select:none}
-.master button{height:40px;font-size:13px}
-.ma{background:#258548}.ml{background:#2869b2}.ms{background:#c64740}.mr{background:#707b86}
-.columns{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px}
-.col{min-width:0}
-.runner{height:58px;background:white;border:1px solid #d5dbe1;border-radius:7px;margin-bottom:4px;padding:4px;display:grid;
-grid-template-columns:minmax(95px,1.2fr) 86px 43px 58px 43px;grid-template-rows:28px 20px;gap:3px;align-items:center}
-.runner.running{background:#e8f7ed;border-color:#4a9d65}
-.runner input{min-width:0;width:100%;height:27px;border:0;background:transparent;font-size:13px;font-weight:800;padding:2px 3px}
-.time{font-size:21px;font-weight:900;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.runner button{height:29px;padding:0;font-size:12px}
-.go{background:#258548;font-size:17px!important}.lap{background:#2869b2}.stop{background:#c64740;font-size:15px!important}
-.split{grid-column:1/6;text-align:right;font-size:11px;font-weight:700;color:#5d6872;padding-right:3px;white-space:nowrap}
-.note{font-size:10px;text-align:center;color:#66717b;padding:3px}
+<!DOCTYPE html>
 
-/* Portrait stays compact; rotate phone for the intended race view */
-@media (orientation:portrait){
- .title{font-size:12px}.master button{height:31px;font-size:9px}
- .columns{gap:3px;padding:3px}
- .runner{height:45px;margin-bottom:2px;padding:2px;grid-template-columns:minmax(0,1fr) 52px 25px 34px 25px;grid-template-rows:20px 17px;gap:1px}
- .runner input{height:19px;font-size:8px}.time{font-size:12px}.runner button{height:20px;font-size:8px}
- .go{font-size:11px!important}.stop{font-size:10px!important}.split{font-size:8px}
-}
-@media (orientation:landscape) and (max-height:500px){
- .top{padding:3px 8px}.title{display:none}.master button{height:34px}
- .columns{padding:4px 7px;gap:7px}
- .runner{height:39px;margin-bottom:2px;padding:2px 4px;grid-template-columns:minmax(105px,1.2fr) 80px 42px 55px 42px;grid-template-rows:31px;gap:4px}
- .runner input{height:30px;font-size:13px}.time{font-size:19px}
- .runner button{height:31px}.split{display:none}
-}
-</style><meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="DMan’s MultiTimer">
-<meta name="theme-color" content="#17395f">
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiB2aWV3Qm94PSIwIDAgMTgwIDE4MCI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIzOCIgZmlsbD0iIzE3Mzk1ZiIvPjxjaXJjbGUgY3g9IjkwIiBjeT0iOTQiIHI9IjU1IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTkwIDk0VjU4TTkwIDk0bDI5IDE4IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cmVjdCB4PSI3MyIgeT0iMjIiIHdpZHRoPSIzNCIgaGVpZ2h0PSIxMiIgcng9IjYiIGZpbGw9IndoaXRlIi8+PHRleHQgeD0iOTAiIHk9IjE1OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSJ3aGl0ZSI+RE1BTjwvdGV4dD48L3N2Zz4=">
-</head><body>
-<div class="top"><div class="title">DMan’s MultiTimer</div>
+<html>
+
+<head>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>DMan's MultiTimer</title>
+
+<style>
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+body{margin:0;font-family:Arial,sans-serif;background:#eef2f5;color:#fff}
+
+.top{background:#17395f;padding:10px}
+
+.title{text-align:center;font-size:18px;font-weight:bold;margin-bottom:8px}
+
+.master{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+
+button{border:0;border-radius:7px;font-weight:bold}
+
+.master button{height:40px;color:#fff;font-size:12px}
+
+.startall{background:#258548}.lapall{background:#d58b18}.stopall{background:#a83232}.resetall{background:#555}
+
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px}
+
+.runner{background:#fff;color:#111;border-radius:8px;padding:5px;margin-bottom:4px;min-width:0}
+
+.runner.running{background:#e5f5e8}
+
+.name{width:100%;font-size:15px;font-weight:bold;border:0;border-bottom:1px solid #ddd;padding:3px;background:transparent}
+
+.times{display:grid;grid-template-columns:1fr 1fr;gap:3px;text-align:center;margin:3px 0}
+
+.label{font-size:9px;color:#666;font-weight:bold}
+
+.time{font-size:18px;font-weight:bold;font-variant-numeric:tabular-nums}
+
+.buttons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px}
+
+.runner button{height:29px;color:#fff;font-size:11px}
+
+.go{background:#258548}.lap{background:#d58b18}.stop{background:#a83232}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="top">
+
+<div class="title">DMan's MultiTimer</div>
+
 <div class="master">
-<button class="ma" data-master="start">START ALL</button>
-<button class="ml" data-master="lap">LAP ALL</button>
-<button class="ms" data-master="stop">STOP ALL</button>
-<button class="mr" data-master="reset">RESET ALL</button>
-</div></div>
-<div class="columns"><div class="col"><div class="runner" id="r1">
-      <input id="n1" value="Runner 1" aria-label="Runner 1">
-      <span class="time" id="t1">0:00.0</span>
-      <button class="go" data-action="start" data-i="1">▶</button>
-      <button class="lap" data-action="lap" data-i="1">LAP</button>
-      <button class="stop" data-action="stop" data-i="1">■</button>
-      <span class="split" id="s1">—</span>
-    </div><div class="runner" id="r3">
-      <input id="n3" value="Runner 3" aria-label="Runner 3">
-      <span class="time" id="t3">0:00.0</span>
-      <button class="go" data-action="start" data-i="3">▶</button>
-      <button class="lap" data-action="lap" data-i="3">LAP</button>
-      <button class="stop" data-action="stop" data-i="3">■</button>
-      <span class="split" id="s3">—</span>
-    </div><div class="runner" id="r5">
-      <input id="n5" value="Runner 5" aria-label="Runner 5">
-      <span class="time" id="t5">0:00.0</span>
-      <button class="go" data-action="start" data-i="5">▶</button>
-      <button class="lap" data-action="lap" data-i="5">LAP</button>
-      <button class="stop" data-action="stop" data-i="5">■</button>
-      <span class="split" id="s5">—</span>
-    </div><div class="runner" id="r7">
-      <input id="n7" value="Runner 7" aria-label="Runner 7">
-      <span class="time" id="t7">0:00.0</span>
-      <button class="go" data-action="start" data-i="7">▶</button>
-      <button class="lap" data-action="lap" data-i="7">LAP</button>
-      <button class="stop" data-action="stop" data-i="7">■</button>
-      <span class="split" id="s7">—</span>
-    </div><div class="runner" id="r9">
-      <input id="n9" value="Runner 9" aria-label="Runner 9">
-      <span class="time" id="t9">0:00.0</span>
-      <button class="go" data-action="start" data-i="9">▶</button>
-      <button class="lap" data-action="lap" data-i="9">LAP</button>
-      <button class="stop" data-action="stop" data-i="9">■</button>
-      <span class="split" id="s9">—</span>
-    </div><div class="runner" id="r11">
-      <input id="n11" value="Runner 11" aria-label="Runner 11">
-      <span class="time" id="t11">0:00.0</span>
-      <button class="go" data-action="start" data-i="11">▶</button>
-      <button class="lap" data-action="lap" data-i="11">LAP</button>
-      <button class="stop" data-action="stop" data-i="11">■</button>
-      <span class="split" id="s11">—</span>
-    </div><div class="runner" id="r13">
-      <input id="n13" value="Runner 13" aria-label="Runner 13">
-      <span class="time" id="t13">0:00.0</span>
-      <button class="go" data-action="start" data-i="13">▶</button>
-      <button class="lap" data-action="lap" data-i="13">LAP</button>
-      <button class="stop" data-action="stop" data-i="13">■</button>
-      <span class="split" id="s13">—</span>
-    </div><div class="runner" id="r15">
-      <input id="n15" value="Runner 15" aria-label="Runner 15">
-      <span class="time" id="t15">0:00.0</span>
-      <button class="go" data-action="start" data-i="15">▶</button>
-      <button class="lap" data-action="lap" data-i="15">LAP</button>
-      <button class="stop" data-action="stop" data-i="15">■</button>
-      <span class="split" id="s15">—</span>
-    </div><div class="runner" id="r17">
-      <input id="n17" value="Runner 17" aria-label="Runner 17">
-      <span class="time" id="t17">0:00.0</span>
-      <button class="go" data-action="start" data-i="17">▶</button>
-      <button class="lap" data-action="lap" data-i="17">LAP</button>
-      <button class="stop" data-action="stop" data-i="17">■</button>
-      <span class="split" id="s17">—</span>
-    </div><div class="runner" id="r19">
-      <input id="n19" value="Runner 19" aria-label="Runner 19">
-      <span class="time" id="t19">0:00.0</span>
-      <button class="go" data-action="start" data-i="19">▶</button>
-      <button class="lap" data-action="lap" data-i="19">LAP</button>
-      <button class="stop" data-action="stop" data-i="19">■</button>
-      <span class="split" id="s19">—</span>
-    </div></div><div class="col"><div class="runner" id="r2">
-      <input id="n2" value="Runner 2" aria-label="Runner 2">
-      <span class="time" id="t2">0:00.0</span>
-      <button class="go" data-action="start" data-i="2">▶</button>
-      <button class="lap" data-action="lap" data-i="2">LAP</button>
-      <button class="stop" data-action="stop" data-i="2">■</button>
-      <span class="split" id="s2">—</span>
-    </div><div class="runner" id="r4">
-      <input id="n4" value="Runner 4" aria-label="Runner 4">
-      <span class="time" id="t4">0:00.0</span>
-      <button class="go" data-action="start" data-i="4">▶</button>
-      <button class="lap" data-action="lap" data-i="4">LAP</button>
-      <button class="stop" data-action="stop" data-i="4">■</button>
-      <span class="split" id="s4">—</span>
-    </div><div class="runner" id="r6">
-      <input id="n6" value="Runner 6" aria-label="Runner 6">
-      <span class="time" id="t6">0:00.0</span>
-      <button class="go" data-action="start" data-i="6">▶</button>
-      <button class="lap" data-action="lap" data-i="6">LAP</button>
-      <button class="stop" data-action="stop" data-i="6">■</button>
-      <span class="split" id="s6">—</span>
-    </div><div class="runner" id="r8">
-      <input id="n8" value="Runner 8" aria-label="Runner 8">
-      <span class="time" id="t8">0:00.0</span>
-      <button class="go" data-action="start" data-i="8">▶</button>
-      <button class="lap" data-action="lap" data-i="8">LAP</button>
-      <button class="stop" data-action="stop" data-i="8">■</button>
-      <span class="split" id="s8">—</span>
-    </div><div class="runner" id="r10">
-      <input id="n10" value="Runner 10" aria-label="Runner 10">
-      <span class="time" id="t10">0:00.0</span>
-      <button class="go" data-action="start" data-i="10">▶</button>
-      <button class="lap" data-action="lap" data-i="10">LAP</button>
-      <button class="stop" data-action="stop" data-i="10">■</button>
-      <span class="split" id="s10">—</span>
-    </div><div class="runner" id="r12">
-      <input id="n12" value="Runner 12" aria-label="Runner 12">
-      <span class="time" id="t12">0:00.0</span>
-      <button class="go" data-action="start" data-i="12">▶</button>
-      <button class="lap" data-action="lap" data-i="12">LAP</button>
-      <button class="stop" data-action="stop" data-i="12">■</button>
-      <span class="split" id="s12">—</span>
-    </div><div class="runner" id="r14">
-      <input id="n14" value="Runner 14" aria-label="Runner 14">
-      <span class="time" id="t14">0:00.0</span>
-      <button class="go" data-action="start" data-i="14">▶</button>
-      <button class="lap" data-action="lap" data-i="14">LAP</button>
-      <button class="stop" data-action="stop" data-i="14">■</button>
-      <span class="split" id="s14">—</span>
-    </div><div class="runner" id="r16">
-      <input id="n16" value="Runner 16" aria-label="Runner 16">
-      <span class="time" id="t16">0:00.0</span>
-      <button class="go" data-action="start" data-i="16">▶</button>
-      <button class="lap" data-action="lap" data-i="16">LAP</button>
-      <button class="stop" data-action="stop" data-i="16">■</button>
-      <span class="split" id="s16">—</span>
-    </div><div class="runner" id="r18">
-      <input id="n18" value="Runner 18" aria-label="Runner 18">
-      <span class="time" id="t18">0:00.0</span>
-      <button class="go" data-action="start" data-i="18">▶</button>
-      <button class="lap" data-action="lap" data-i="18">LAP</button>
-      <button class="stop" data-action="stop" data-i="18">■</button>
-      <span class="split" id="s18">—</span>
-    </div><div class="runner" id="r20">
-      <input id="n20" value="Runner 20" aria-label="Runner 20">
-      <span class="time" id="t20">0:00.0</span>
-      <button class="go" data-action="start" data-i="20">▶</button>
-      <button class="lap" data-action="lap" data-i="20">LAP</button>
-      <button class="stop" data-action="stop" data-i="20">■</button>
-      <span class="split" id="s20">—</span>
-    </div></div></div>
-<div class="note">▶ start • LAP records split • ■ stop • names save automatically</div>
+
+<button class="startall" onclick="startAll()">START ALL</button>
+
+<button class="lapall" onclick="lapAll()">LAP ALL</button>
+
+<button class="stopall" onclick="stopAll()">STOP ALL</button>
+
+<button class="resetall" onclick="resetAll()">RESET ALL</button>
+
+</div>
+
+</div>
+
+<div class="columns" id="columns"></div>
+
 <script>
-(function(){
-"use strict";
-var N=20, watches=[];
-for(var i=0;i<=N;i++) watches.push({running:false,base:0,started:0,lastLap:0,laps:[]});
-function clock(){return (window.performance&&performance.now)?performance.now():Date.now();}
-function total(i){var x=watches[i];return x.base+(x.running?clock()-x.started:0);}
-function fmt(ms){if(ms<0)ms=0;var tenths=Math.floor(ms/100),d=tenths%10,secs=Math.floor(tenths/10),s=secs%60,m=Math.floor(secs/60);return m+":"+("0"+s).slice(-2)+"."+d;}
-function draw(i){document.getElementById("t"+i).textContent=fmt(total(i));document.getElementById("r"+i).className="runner"+(watches[i].running?" running":"");}
-function start(i){var x=watches[i];if(!x.running){x.started=clock();x.running=true;draw(i);}}
-function stop(i){var x=watches[i];if(x.running){x.base+=clock()-x.started;x.running=false;draw(i);}}
-function lap(i){var x=watches[i];if(!x.running)return;var t=total(i),sp=t-x.lastLap;x.lastLap=t;x.laps.push([sp,t]);document.getElementById("s"+i).textContent="Lap "+x.laps.length+": "+fmt(sp)+"  •  "+fmt(t);}
-function reset(i){watches[i]={running:false,base:0,started:0,lastLap:0,laps:[]};document.getElementById("s"+i).textContent="—";draw(i);}
-document.addEventListener("click",function(e){
- var b=e.target.closest?e.target.closest("button"):e.target;
- if(!b||b.tagName!=="BUTTON")return;
- e.preventDefault();
- var a=b.getAttribute("data-action"), idx=parseInt(b.getAttribute("data-i"),10);
- if(a&&idx){if(a==="start")start(idx);else if(a==="lap")lap(idx);else if(a==="stop")stop(idx);return;}
- var m=b.getAttribute("data-master");
- if(m==="start")for(var j=1;j<=N;j++)start(j);
- else if(m==="lap")for(var j=1;j<=N;j++)lap(j);
- else if(m==="stop")for(var j=1;j<=N;j++)stop(j);
- else if(m==="reset"){if(confirm("Reset all watches and lap data?"))for(var j=1;j<=N;j++)reset(j);}
-},false);
-for(var k=1;k<=N;k++){(function(i){
- var el=document.getElementById("n"+i);
- try{var saved=localStorage.getItem("runner2col"+i);if(saved)el.value=saved;}catch(e){}
- el.addEventListener("change",function(){try{localStorage.setItem("runner2col"+i,el.value);}catch(e){}});
-})(k);}
-function tick(){for(var i=1;i<=N;i++)if(watches[i].running)draw(i);(window.requestAnimationFrame||function(f){setTimeout(f,50)})(tick);}
-tick();
-})();
-</script></body></html>
+
+const COUNT=20;
+
+const runners=[];
+
+function fmt(ms){
+
+  if(ms<0) ms=0;
+
+  const tenths=Math.floor(ms/100)%10;
+
+  const sec=Math.floor(ms/1000)%60;
+
+  const min=Math.floor(ms/60000);
+
+  return min+":"+String(sec).padStart(2,"0")+"."+tenths;
+
+}
+
+function createRunner(i){
+
+  const r={running:false,startAt:0,accumulated:0,lapStartElapsed:0};
+
+  runners.push(r);
+
+  const box=document.createElement("div");
+
+  box.className="runner"; box.id="runner"+i;
+
+  box.innerHTML=`
+
+    <input class="name" value="Runner ${i+1}">
+
+    <div class="times">
+
+      <div><div class="label">TOTAL</div><div class="time" id="total${i}">0:00.0</div></div>
+
+      <div><div class="label">LAP</div><div class="time" id="lap${i}">0:00.0</div></div>
+
+    </div>
+
+    <div class="buttons">
+
+      <button class="go" onclick="startOne(${i})">START</button>
+
+      <button class="lap" onclick="lapOne(${i})">LAP</button>
+
+      <button class="stop" onclick="stopOne(${i})">STOP</button>
+
+    </div>`;
+
+  return box;
+
+}
+
+const columns=document.getElementById("columns");
+
+const left=document.createElement("div"), right=document.createElement("div");
+
+left.className=right.className="col"; columns.append(left,right);
+
+for(let i=0;i<COUNT;i++) (i<10?left:right).appendChild(createRunner(i));
+
+function elapsed(i){
+
+  const r=runners[i];
+
+  return r.accumulated+(r.running?(performance.now()-r.startAt):0);
+
+}
+
+function startOne(i){
+
+  const r=runners[i]; if(r.running)return;
+
+  r.startAt=performance.now(); r.running=true;
+
+  document.getElementById("runner"+i).classList.add("running");
+
+}
+
+function lapOne(i){
+
+  const r=runners[i]; if(!r.running)return;
+
+  r.lapStartElapsed=elapsed(i);
+
+}
+
+function stopOne(i){
+
+  const r=runners[i]; if(!r.running)return;
+
+  r.accumulated=elapsed(i); r.running=false;
+
+  document.getElementById("runner"+i).classList.remove("running");
+
+}
+
+function resetOne(i){
+
+  const r=runners[i];
+
+  r.running=false; r.startAt=0; r.accumulated=0; r.lapStartElapsed=0;
+
+  document.getElementById("runner"+i).classList.remove("running");
+
+}
+
+function startAll(){for(let i=0;i<COUNT;i++)startOne(i)}
+
+function lapAll(){for(let i=0;i<COUNT;i++)lapOne(i)}
+
+function stopAll(){for(let i=0;i<COUNT;i++)stopOne(i)}
+
+function resetAll(){for(let i=0;i<COUNT;i++)resetOne(i)}
+
+function update(){
+
+  for(let i=0;i<COUNT;i++){
+
+    const e=elapsed(i);
+
+    document.getElementById("total"+i).textContent=fmt(e);
+
+    document.getElementById("lap"+i).textContent=fmt(e-runners[i].lapStartElapsed);
+
+  }
+
+  requestAnimationFrame(update);
+
+}
+
+update();
+
+</script>
+
+</body>
+
+</html>
